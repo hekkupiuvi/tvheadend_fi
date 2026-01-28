@@ -8,6 +8,12 @@
 [ -z "$URL" ] && URL=https://github.com/tvheadend/dtv-scan-tables.git
 DIR="$1" && [ -z "$DIR" ] && DIR=$(dirname "$0")/../data/dvb-scan
 
+# Note: automatic fetching is disabled. Set ALLOW_DTV_SCAN_FETCH=1 to enable.
+if [ "${ALLOW_DTV_SCAN_FETCH}" != "1" ]; then
+  echo "Automatic dtv-scan-tables fetching is disabled. Provide local tables in ${DIR} or set ALLOW_DTV_SCAN_FETCH=1." >&2
+  exit 1
+fi
+
 # Update
 if [ -d "${DIR}/.git" ]; then
   LAST=$(pwd)
