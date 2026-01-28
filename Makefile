@@ -888,9 +888,15 @@ ffmpeg_rebuild:
 
 # linuxdvb git tree
 $(ROOTDIR)/data/dvb-scan/.stamp:
-	@echo "Receiving data/dvb-scan from https://github.com/tvheadend/dtv-scan-tables.git#tvheadend"
-	@rm -rf $(ROOTDIR)/data/dvb-scan/*
-	@$(ROOTDIR)/support/getmuxlist $(ROOTDIR)/data/dvb-scan
+	@echo "Using local data/dvb-scan (automatic fetching disabled)"
+	@if ! test -d $(ROOTDIR)/data/dvb-scan ; then \
+		echo "Missing local dvb-scan tables in $(ROOTDIR)/data/dvb-scan"; \
+		exit 1; \
+	fi
+	@if ! ls -A $(ROOTDIR)/data/dvb-scan > /dev/null 2>&1 ; then \
+		echo "Local dvb-scan tables directory is empty: $(ROOTDIR)/data/dvb-scan"; \
+		exit 1; \
+	fi
 	@touch $@
 
 .PHONY: check_dvb_scan
