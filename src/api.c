@@ -163,6 +163,7 @@ void api_init ( void )
   api_satip_server_init();
   api_timeshift_init();
   api_wizard_init();
+  api_quicksetup_init();
 }
 
 void api_done ( void )

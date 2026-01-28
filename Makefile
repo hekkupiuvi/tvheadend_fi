@@ -325,7 +325,8 @@ SRCS-2 = \
 	src/api/api_language.c \
 	src/api/api_satip.c \
 	src/api/api_timeshift.c \
-	src/api/api_wizard.c
+	src/api/api_wizard.c \
+	src/api/api_quicksetup.c
 
 SRCS-2 += \
         src/parsers/message.c \
