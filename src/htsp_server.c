@@ -3250,7 +3250,9 @@ htsp_authenticate(htsp_connection_t *htsp, htsmsg_t *m)
 {
   struct htsp_verify_struct vs;
   const char *username;
-  const void *digest;
+  const char *digeststr;
+  const void *digest = NULL;
+  uint8_t digestbuf[20];
   size_t digestlen;
   access_t *rights;
   int privgain = 0;
@@ -3258,7 +3260,20 @@ htsp_authenticate(htsp_connection_t *htsp, htsmsg_t *m)
   if((username = htsmsg_get_str(m, "username")) == NULL)
     return 0;
 
-  if(!htsmsg_get_bin(m, "digest", &digest, &digestlen)) {
+  if (!htsmsg_get_bin(m, "digest", &digest, &digestlen) && digestlen == 20) {
+
+    /* expected binary SHA1 digest */
+
+  } else if ((digeststr = htsmsg_get_str(m, "digest")) != NULL &&
+             strlen(digeststr) == 40 &&
+             !hex2bin(digestbuf, sizeof(digestbuf), digeststr)) {
+
+    /* tolerate clients that send digest as hex string */
+    digest = digestbuf;
+    digestlen = sizeof(digestbuf);
+  }
+
+  if (digest && digestlen == 20) {
 
     vs.digest = digest;
     vs.challenge = htsp->htsp_challenge;
